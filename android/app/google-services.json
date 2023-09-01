@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "395160532409",
+    "project_id": "lawyeredup-a68cd",
+    "storage_bucket": "lawyeredup-a68cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395160532409:android:3d8ac647c279c0b20db268",
+        "android_client_info": {
+          "package_name": "com.lawyered_up"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395160532409-nk800pvc6agbfn0u5stamqlsfsuo9v2h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzbdmcl4Cy1LGJrnXdTFM1MiDpfE5JPfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395160532409-nk800pvc6agbfn0u5stamqlsfsuo9v2h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
