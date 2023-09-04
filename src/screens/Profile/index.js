@@ -408,66 +408,72 @@ const Profile = ({navigation}) => {
             </>
           )}
           <View style={{height: SIZES.padding}} />
-          <Text style={styles.text}>Operational Hours</Text>
-          <FlatList
-            data={isEnabled}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.id}
-            renderItem={({item, index}) => {
-              return (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <Text style={styles.text2}>{item.name}</Text>
-                  <View style={{flexDirection: 'row', gap: SIZES.padding * 2}}>
+
+          {user_type == userTypes.lawyer && (
+            <>
+              <Text style={styles.text}>Operational Hours</Text>
+              <FlatList
+                data={isEnabled}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={item => item.id}
+                renderItem={({item, index}) => {
+                  return (
                     <View
                       style={{
-                        alignItems: 'center',
                         flexDirection: 'row',
-                        gap: 5,
+                        justifyContent: 'space-between',
                       }}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          setSelectedIndex(index);
-                          setStartTimePickerVisibility(true);
-                        }}
-                        style={{left: 30}}>
-                        <Text style={styles.time}>{item?.start_time}</Text>
-                      </TouchableOpacity>
+                      <Text style={styles.text2}>{item.name}</Text>
+                      <View
+                        style={{flexDirection: 'row', gap: SIZES.padding * 2}}>
+                        <View
+                          style={{
+                            alignItems: 'center',
+                            flexDirection: 'row',
+                            gap: 5,
+                          }}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              setSelectedIndex(index);
+                              setStartTimePickerVisibility(true);
+                            }}
+                            style={{left: 30}}>
+                            <Text style={styles.time}>{item?.start_time}</Text>
+                          </TouchableOpacity>
 
-                      <TouchableOpacity
-                        onPress={() => {
-                          setSelectedIndex(index);
-                          setEndTimePickerVisibility(true);
-                        }}
-                        style={{left: 30}}>
-                        <Text style={styles.time}>{item?.end_time}</Text>
-                      </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => {
+                              setSelectedIndex(index);
+                              setEndTimePickerVisibility(true);
+                            }}
+                            style={{left: 30}}>
+                            <Text style={styles.time}>{item?.end_time}</Text>
+                          </TouchableOpacity>
+                        </View>
+                        <Switch
+                          trackColor={{
+                            false: COLORS.primary,
+                            true: COLORS.secondary,
+                          }}
+                          key={index}
+                          thumbColor={isEnabled ? COLORS.white : COLORS.white}
+                          onValueChange={() => toggleSwitch(index)}
+                          value={item?.on}
+                        />
+                      </View>
                     </View>
-                    <Switch
-                      trackColor={{
-                        false: COLORS.primary,
-                        true: COLORS.secondary,
-                      }}
-                      key={index}
-                      thumbColor={isEnabled ? COLORS.white : COLORS.white}
-                      onValueChange={() => toggleSwitch(index)}
-                      value={item?.on}
-                    />
-                  </View>
-                </View>
-              );
-            }}
-          />
-          <InuputFeild
-            style={styles.input}
-            placeholder={'Add Detail'}
-            value={add_detail}
-            multiline={true}
-            onChangeText={text => setadd_detail(text)}
-          />
+                  );
+                }}
+              />
+              <InuputFeild
+                style={styles.input}
+                placeholder={'Add Detail'}
+                value={add_detail}
+                multiline={true}
+                onChangeText={text => setadd_detail(text)}
+              />
+            </>
+          )}
           <View style={{paddingVertical: SIZES.padding}}>
             {loading || uploading ? (
               <ActivityIndicator

@@ -5,14 +5,16 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
+  FlatList,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {COLORS, images, SIZES} from '../../constant';
 import {styles} from './index.style';
 import {Icons} from '../../Component';
 import info_icon from '../../assest/icons/info_icon';
 import doller_icon from '../../assest/icons/doller_icon';
-import White_info_icon from '../../assest/icons/White_info_icon';
 import blue_clock_icon from '../../assest/icons/blue_clock_icon';
 import upload_icon from '../../assest/icons/upload_icon';
 import white_massage_icon from '../../assest/icons/white_massage_icon';
@@ -20,17 +22,90 @@ import back_arrow_white from '../../assest/icons/back_arrow_white';
 import drawer_icon from '../../assest/icons/drawer_icon';
 import more_icon from '../../assest/icons/more_icon';
 import {useDispatch, useSelector} from 'react-redux';
-import {getLawyer} from '../../redux/action/category-action';
+import {Switch} from 'react-native-gesture-handler';
+import {getFriendRequest, send_request} from '../../redux/action/auth-action';
+import {showtoast} from '../../utils/function';
 
+const days = [
+  {
+    id: 1,
+    name: 'Monday',
+    start_time: '09:00 am',
+    end_time: '06:00 pm',
+    on: false,
+  },
+  {
+    id: 2,
+    name: 'Tuesday',
+    start_time: '09:00 am',
+    end_time: '06:00 pm',
+    on: false,
+  },
+  {
+    id: 3,
+    name: 'Wednesday',
+    start_time: '09:00 am',
+    end_time: '06:00 pm',
+    on: false,
+  },
+  {
+    id: 4,
+    name: 'Thursday',
+    start_time: '09:00 am',
+    end_time: '06:00 pm',
+    on: false,
+  },
+  {
+    id: 5,
+    name: 'Friday',
+    start_time: '09:00 am',
+    end_time: '06:00 pm',
+    on: false,
+  },
+  {
+    id: 6,
+    name: 'Saturday',
+    start_time: '09:00 am',
+    end_time: '06:00 pm',
+    on: false,
+  },
+  {
+    id: 7,
+    name: 'Sunday',
+    start_time: '09:00 am',
+    end_time: '06:00 pm',
+    on: false,
+  },
+];
 const Lawyer_Profile = ({navigation, route}) => {
   const dispatch = useDispatch();
+
+  const {user} = useSelector(state => state.authReducer);
+  const {loading} = useSelector(state => state.authReducer);
   const {data} = route.params;
-  console.log(data, 'datataaa');
+  // console.log(data, 'datataaa');
+
+  const sendrequest = () => {
+    dispatch(getFriendRequest('sender_id', data?.uid, user?.uid))
+    // const apiDate = {
+    //   reciever_id: data?.uid,
+    //   sender_id: user?.uid,
+    //   status: 'pending',
+    // };
+    // dispatch(
+    //   send_request(apiDate, () => {
+    //     showtoast('success', 'request is send');
+    //   }),
+    // );
+  };
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <ImageBackground
-        source={images.profile_header}
-        style={{uri: data?.profile_image}}>
+        source={
+          data.profile_image ? {uri: data?.profile_image} : images.profile_1
+        }
+        style={styles.image_view}>
         <View style={styles.sub_views}>
           <TouchableOpacity
             activeOpacity={1}
@@ -90,25 +165,13 @@ const Lawyer_Profile = ({navigation, route}) => {
                   style={styles.btn}>
                   <Text style={styles.btn_text}>{data?.cost}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <Icons name={more_icon} />
-                </TouchableOpacity>
               </View>
             </View>
             <View
               style={{
                 flexDirection: 'row',
-                marginTop: SIZES.padding,
-                // justifyContent: 'space-between'
-              }}>
-              <Text style={styles.text}>Experience:</Text>
-              <Text style={styles.texts}> Lorem ipsum dolor sit amet</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
                 marginTop: SIZES.padding2,
-                justifyContent: 'space-between',
+                gap: SIZES.padding,
               }}>
               <Text style={styles.text}>Location:</Text>
               <Text style={styles.texts}>{data.address}</Text>
@@ -118,87 +181,63 @@ const Lawyer_Profile = ({navigation, route}) => {
               <Icons name={blue_clock_icon} />
               <Text style={styles.tittle}>Operation hour</Text>
             </View>
-            <View>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.text}>Monday</Text>
-                <Text style={styles.texts}>09:00 AM - 06:00 PM </Text>
-              </View>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.text}>Tuesday</Text>
-                <Text style={styles.texts}>09:00 AM - 06:00 PM </Text>
-              </View>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.text}>Wednesday</Text>
-                <Text style={styles.texts}>09:00 AM - 06:00 PM </Text>
-              </View>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.text}>Thursday</Text>
-                <Text style={styles.texts}>09:00 AM - 06:00 PM </Text>
-              </View>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.text}>Friday</Text>
-                <Text style={styles.texts}>09:00 AM - 06:00 PM </Text>
-              </View>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.text}>Saturday</Text>
-                <Text style={styles.head}>Closed</Text>
-              </View>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.text}>Sunday</Text>
-                <Text style={styles.head}>Closed</Text>
-              </View>
-            </View>
+            <FlatList
+              data={data?.operational_hours}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => {
+                return (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text style={styles.text2}>{item.name}</Text>
+                    <View
+                      style={{flexDirection: 'row', gap: SIZES.padding * 2}}>
+                      <View
+                        style={{
+                          alignItems: 'center',
+                          flexDirection: 'row',
+                          gap: 5,
+                        }}>
+                        <TouchableOpacity style={{left: 30}}>
+                          <Text style={styles.time}>{item?.start_time}</Text>
+                        </TouchableOpacity>
 
-            <TouchableOpacity
-              activeOpacity={1}
-              onPress={() => navigation.navigate('Creat_Fourms')}
-              style={{alignItems: 'center'}}>
-              <Text style={styles.top_laywer}>
-                Fill out the form to speak with the lawyer
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={1}
-              onPress={() => navigation.navigate('File_Upload')}
+                        <TouchableOpacity style={{left: 30}}>
+                          <Text style={styles.time}>{item?.end_time}</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <Switch
+                        trackColor={{
+                          false: COLORS.primary,
+                          true: COLORS.secondary,
+                        }}
+                        thumbColor={COLORS.white}
+                        value={item?.on}
+                      />
+                    </View>
+                  </View>
+                );
+              }}
+            />
+          </View>
+          {loading ? (
+            <ActivityIndicator size={'large'} color={COLORS.primary} />
+          ) : (
+            <View
               style={{
-                flexDirection: 'row',
-                gap: 7,
-                marginLeft: SIZES.padding * 2,
-                marginTop: SIZES.padding2,
+                paddingHorizontal: SIZES.padding,
               }}>
-              <Icons name={upload_icon} />
-              <Text style={styles.top_laywers}>upload your File</Text>
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: SIZES.padding,
-            }}>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={styles.btn3}
-              onPress={() => navigation.navigate('My_Contact')}>
-              <Text style={styles.btn_text}>Refer to Friend</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={1}
-              style={styles.btn3}
-              onPress={() => navigation.navigate('Chat_Screen')}>
-              <View style={{flexDirection: 'row', gap: 8}}>
-                <Icons name={white_massage_icon} />
-                <Text style={styles.btn_text}>Meeting</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                activeOpacity={1}
+                style={styles.btn3}
+                onPress={() => sendrequest()}>
+                <Text style={styles.btn_text}>Send Request</Text>
+              </TouchableOpacity>
+            </View>
+          )}
           <View style={{height: SIZES.padding}} />
         </View>
       </ScrollView>

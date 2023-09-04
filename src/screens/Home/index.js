@@ -48,7 +48,6 @@ const Home = ({navigation}) => {
   const {categories_loading} = useSelector(state => state.categoryReducer);
   const [image, setImage] = useState(user?.profile_image);
 
-  console.log(user);
   useEffect(() => {
     dispatch(getCategories());
   }, []);

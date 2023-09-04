@@ -15,20 +15,21 @@ import {COLORS, images, SIZES} from '../../constant';
 import Common_Header from '../../Component/CommonHeader';
 import {useDispatch, useSelector} from 'react-redux';
 import {getLawyer} from '../../redux/action/category-action';
+import localStoreUtil from '../../utils/loccal_store';
 
 const LawyeredUp = ({navigation, route}) => {
   const selectedSubCategory = route.params;
   const {lawyers} = useSelector(state => state.categoryReducer);
   const {lawyers_loading} = useSelector(state => state.categoryReducer);
   const [search, setSearch] = useState('');
-
+  console.log(lawyers, 'lawyerssss');
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getLawyer(selectedSubCategory));
   }, []);
 
   const SeacrhLawyers = text => {
-    return lawyers.filter(item => item?.full_name.match(text));
+    return user.filter(item => item?.full_name.match(text));
   };
 
   const EmptyComponent = () => {
@@ -81,7 +82,11 @@ const LawyeredUp = ({navigation, route}) => {
                   <View style={styles.flatlist}>
                     <Image
                       resizeMode="cover"
-                      source={item?.profile_image ? {uri: item?.profile_image} : images.profile_1}
+                      source={
+                        item?.profile_image
+                          ? {uri: item?.profile_image}
+                          : images.profile_1
+                      }
                       style={{height: 100, width: 120}}
                     />
                     <View
@@ -92,7 +97,7 @@ const LawyeredUp = ({navigation, route}) => {
                       }}>
                       <Text style={styles.head_text}>{item.full_name}</Text>
                       <Text style={styles.text}>{item.user_type}</Text>
-                      <Text style={styles.para}>{item.discription}</Text>
+                      <Text style={styles.para}>{item.add_detail}</Text>
                       <View
                         style={{
                           flexDirection: 'row',

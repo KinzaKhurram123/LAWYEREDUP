@@ -2,6 +2,8 @@ import auth, {firebase} from '@react-native-firebase/auth';
 import {showtoast} from '../../utils/function';
 import localStoreUtil from '../../utils/loccal_store';
 import database from '@react-native-firebase/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {async} from '@firebase/util';
 
 export const userlogin = (data, onDone) => {
   return async dispatch => {
@@ -18,7 +20,7 @@ export const userlogin = (data, onDone) => {
           .once('value')
           .then(async user => {
             await localStoreUtil.store_data('user', user?.val());
-            console.log(user?.val(), 'userrrrrr')
+            console.log(user?.val(), 'userrrrrr');
             dispatch({type: 'LOGIN_SUCCESS', payload: user?.val()});
             onDone();
           });
@@ -102,5 +104,47 @@ export const edit_profile = (data, user, onDone) => {
       dispatch({type: 'EDIT_PROFILE_ERROR'});
       console.loh(err, 'err');
     }
+  };
+};
+
+export const send_request = (data, onDone) => {
+  return async dispatch => {
+    try {
+      dispatch({type: 'SEND_REQUEST_PROCESS'});
+      const response = await database().ref('databse/chatlist/').push(data);
+      console.log(response, 'responseee');
+      onDone();
+
+      dispatch({type: 'SEND_REQUEST_SUCCESS'});
+    } catch (err) {
+      dispatch({type: 'SEND_REQUEST_ERROR'});
+      console.log(err);
+    }
+  };
+};
+
+export const getFriendRequest = (condition, reciever_id, sender_id) => {
+  return async dispatch => {
+    try {
+      dispatch({type: 'GET_REQUEST_PROCESS'});
+      database()
+        .ref('databse/chatlist')
+        .orderByChild(condition)
+        .equalTo(sender_id)
+        .once('value')
+        .then(snap => {
+          let array = [];
+          for (var key in snap?.val())
+            console.log(
+              snap?.val()[key]?.reciever_id,
+              reciever_id,
+              snap?.val()[key],
+              'snap[key]?.reciever_id === reciever_id',
+            );
+          if (snap?.val()[key]?.reciever_id === reciever_id) {
+            array.push(snap?.val()[key]);
+          }
+        });
+    } catch {}
   };
 };

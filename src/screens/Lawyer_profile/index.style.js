@@ -40,6 +40,8 @@ export const styles = StyleSheet.create({
   },
   image_view: {
     alignItems: 'center',
+    height: 200,
+    width: '100%',
   },
 
   search_view: {
@@ -63,10 +65,10 @@ export const styles = StyleSheet.create({
   btn3: {
     backgroundColor: COLORS.secondary,
     height: 50,
-    width: 150,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 2
+    margin: 2,
   },
   text: {
     // marginTop: 10,
@@ -136,5 +138,16 @@ export const styles = StyleSheet.create({
   },
   icon: {
     paddingTop: 7,
+  },
+  text2: {
+    ...FONTS.Bold15,
+    color: COLORS.secondary,
+    marginTop: SIZES.padding2,
+  },
+  time: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: SIZES.padding2,
+    color: '#4A68A2',
   },
 });

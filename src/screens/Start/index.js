@@ -20,7 +20,7 @@ const Start = ({navigation}) => {
     navigation.dispatch(
       StackActions.replace(user ? 'Tab_navigation' : 'AuthStack'),
     );
-console.log(userData, 'userrrrr')
+    console.log(userData, 'userrrrr');
     if (initializing) setInitializing(false);
   }
   useEffect(() => {

@@ -2,6 +2,8 @@ const initialState = {
   user: null,
   loading: false,
   user_type: 'client',
+  send_request: [],
+  get_request: [],
 };
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -75,6 +77,38 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+      };
+    case 'RECIEVE_REQUEST_PROCESS':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'RECIEVE_REQUEST_SUCCESS':
+      return {
+        ...state,
+        loading: false,
+        send_request: action.payload,
+      };
+    case 'RECIEVE_REQUEST_ERROR':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'SEND_REQUEST_PROCESS':
+      return {
+        ...state,
+        loading: true,
+      };
+    case 'SEND_REQUEST_SUCCESS':
+      return {
+        ...state,
+        loading: false,
+        get_request: action.payload,
+      };
+    case 'SEND_REQUEST_ERROR':
+      return {
+        ...state,
+        loading: true,
       };
     default:
       return state;
