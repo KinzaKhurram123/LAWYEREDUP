@@ -2,8 +2,8 @@ import auth, {firebase} from '@react-native-firebase/auth';
 import {showtoast} from '../../utils/function';
 import localStoreUtil from '../../utils/loccal_store';
 import database from '@react-native-firebase/database';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {async} from '@firebase/util';
+import {orderByChild} from '@firebase/database';
 
 export const userlogin = (data, onDone) => {
   return async dispatch => {
@@ -20,7 +20,6 @@ export const userlogin = (data, onDone) => {
           .once('value')
           .then(async user => {
             await localStoreUtil.store_data('user', user?.val());
-            console.log(user?.val(), 'userrrrrr');
             dispatch({type: 'LOGIN_SUCCESS', payload: user?.val()});
             onDone();
           });
@@ -60,7 +59,6 @@ export const usersignup = (data, onDone) => {
     }
   };
 };
-
 export const usersignout = () => {
   return async dispatch => {
     try {
@@ -123,28 +121,67 @@ export const send_request = (data, onDone) => {
   };
 };
 
-export const getFriendRequest = (condition, reciever_id, sender_id) => {
+export const getFriendRequest = (reciever_id, sender_id) => {
   return async dispatch => {
     try {
       dispatch({type: 'GET_REQUEST_PROCESS'});
       database()
         .ref('databse/chatlist')
-        .orderByChild(condition)
+        .orderByChild('sender_id')
         .equalTo(sender_id)
         .once('value')
         .then(snap => {
-          let array = [];
-          for (var key in snap?.val())
-            console.log(
-              snap?.val()[key]?.reciever_id,
-              reciever_id,
-              snap?.val()[key],
-              'snap[key]?.reciever_id === reciever_id',
-            );
-          if (snap?.val()[key]?.reciever_id === reciever_id) {
-            array.push(snap?.val()[key]);
+          for (var key in snap?.val()) {
+            let data = snap?.val()[key]?.reciever_id === reciever_id;
+            if (data) {
+              dispatch({
+                type: 'GET_REQUEST_SUCCESS',
+                payload: snap?.val()[key],
+              });
+            }
+            console.log(data, 'data');
           }
         });
-    } catch {}
+    } catch (err) {
+      console.log(err, 'error');
+      dispatch({type: 'GET_REQUEST_ERROR'});
+    }
+  };
+};
+
+export const getUser = id => {
+  try {
+  } catch (err) {
+    console.log(err, 'error');
+  }
+};
+
+export const getChatlist = id => {
+  return async dispatch => {
+    try {
+      dispatch({type: 'GET_CHATLIST_PROCESS'});
+      database()
+        .ref('databse/chatlist/')
+        .orderByChild('reciever_id')
+        .equalTo(id)
+        .once('value')
+        .then(async snap => {
+          let array = [];
+          for (var key in snap?.val()) {
+            let obj = {...snap?.val()?.[key]};
+            await database()
+              .ref('databse/users/' + id)
+              .once('value')
+              .then(snap => {
+                obj.sender = snap?.val();
+              });
+            array?.push(obj);
+          }
+          dispatch({type: 'GET_CHATLIST_SUCCESS', payload: array});
+        });
+    } catch (err) {
+      console.log(err, 'error');
+      dispatch({type: 'GET_CHATLIST_ERROR'});
+    }
   };
 };

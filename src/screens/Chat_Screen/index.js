@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {COLORS, images, SIZES} from '../../constant';
 import Common_Header from '../../Component/CommonHeader';
 import {Icons} from '../../Component';
@@ -17,6 +17,8 @@ import back_arrow_white from '../../assest/icons/back_arrow_white';
 import {openCamera} from 'react-native-image-crop-picker';
 import option_icon from '../../assest/icons/option_icon';
 import clock_icon from '../../assest/icons/clock_icon';
+import {useDispatch, useSelector} from 'react-redux';
+import {getChatlist} from '../../redux/action/auth-action';
 
 const Chatlist = [
   {
@@ -78,6 +80,12 @@ const Chatlist = [
 ];
 
 const Chat_Screen = ({navigation}) => {
+  const dispatch = useDispatch();
+  const {user, chat_list} = useSelector(state => state.authReducer);
+  console.log(chat_list, 'chat_list');
+  useEffect(() => {
+    dispatch(getChatlist(user?.uid));
+  }, []);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <View style={styles.main_view}>
@@ -101,10 +109,14 @@ const Chat_Screen = ({navigation}) => {
       </View>
       <View style={styles.main_views}>
         <FlatList
-          data={Chatlist}
+          data={chat_list}
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.id}
           renderItem={({item}) => {
+            console.log(
+              'item?.sender?.profile_image',
+              item?.sender?.profile_image,
+            );
             return (
               <TouchableOpacity
                 style={styles.notification_view}
@@ -113,14 +125,23 @@ const Chat_Screen = ({navigation}) => {
                 }>
                 <View style={styles.another_view}>
                   <View>
-                    <Image source={item.icon} />
+                    <Image
+                      style={{height: 100, width: 100}}
+                      source={
+                        item?.sender?.profile_image
+                          ? {uri: item?.sender?.profile_image}
+                          : images.profile_1
+                      }
+                    />
                   </View>
-                  <View style={{flex : 1}}>
-                    <Text style={styles.text_card}>{item.tittle}</Text>
-                    <Text style={{color: 'black'}}>{item.text}</Text>
+                  <View style={{flex: 1}}>
+                    <Text style={styles.text_card}>
+                      {item?.sender?.full_name}
+                    </Text>
+                    {/* <Text style={{color: 'black'}}>{item.text}</Text> */}
                   </View>
                   <View>
-                    <Text style={{textAlign: 'right',}}>{item.time}</Text>
+                    <Text style={{textAlign: 'right'}}>{item.time}</Text>
                   </View>
                 </View>
               </TouchableOpacity>

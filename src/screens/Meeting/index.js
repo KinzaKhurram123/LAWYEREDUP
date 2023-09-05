@@ -7,11 +7,13 @@ import {
   View,
   Image,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import Common_Header from '../../Component/CommonHeader';
 import {COLORS, images, SIZES} from '../../constant';
 import {styles} from './index.style';
 import Signup_client from '../Signup';
+import {useDispatch, useSelector} from 'react-redux';
+import {getChatlist} from '../../redux/action/auth-action';
 
 const chats = [
   {
@@ -95,8 +97,8 @@ const chats = [
     image: images.chat2,
   },
 ];
-
 const Meeting = ({navigation}) => {
+ 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <Common_Header

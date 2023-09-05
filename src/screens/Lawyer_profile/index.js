@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   FlatList,
   Alert,
+  Button,
   ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -80,13 +81,14 @@ const days = [
 const Lawyer_Profile = ({navigation, route}) => {
   const dispatch = useDispatch();
 
-  const {user} = useSelector(state => state.authReducer);
-  const {loading} = useSelector(state => state.authReducer);
+  const {user, loading, request} = useSelector(state => state.authReducer);
   const {data} = route.params;
-  // console.log(data, 'datataaa');
+  console.log(request, 'request');
+  useEffect(() => {
+    dispatch(getFriendRequest(data?.uid, user?.uid));
+  }, []);
 
   const sendrequest = () => {
-    dispatch(getFriendRequest('sender_id', data?.uid, user?.uid))
     // const apiDate = {
     //   reciever_id: data?.uid,
     //   sender_id: user?.uid,
@@ -98,7 +100,6 @@ const Lawyer_Profile = ({navigation, route}) => {
     //   }),
     // );
   };
-
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <ImageBackground
@@ -224,18 +225,35 @@ const Lawyer_Profile = ({navigation, route}) => {
             />
           </View>
           {loading ? (
-            <ActivityIndicator size={'large'} color={COLORS.primary} />
+            <ActivityIndicator
+              size={'large'}
+              color={COLORS.primary}
+              style={{marginTop: SIZES.padding * 2}}
+            />
           ) : (
             <View
               style={{
                 paddingHorizontal: SIZES.padding,
               }}>
               <TouchableOpacity
+                disabled={true}
                 activeOpacity={1}
                 style={styles.btn3}
                 onPress={() => sendrequest()}>
-                <Text style={styles.btn_text}>Send Request</Text>
+                <Text style={styles.btn_text}>
+                  {request?.status == 'pending'
+                    ? 'Pending'
+                    : request?.status == 'Accepted'
+                    ? 'Chat'
+                    : 'Send Request'}
+                </Text>
               </TouchableOpacity>
+              {/* <TouchableOpacity
+                activeOpacity={1}
+                style={styles.btn3}
+                onPress={() => sendrequest()}>
+                <Text style={styles.btn_text}>{'Send Request'}</Text>
+              </TouchableOpacity> */}
             </View>
           )}
           <View style={{height: SIZES.padding}} />

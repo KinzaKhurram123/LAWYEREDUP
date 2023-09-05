@@ -193,8 +193,6 @@ const Profile = ({navigation}) => {
     });
   };
 
-  console.log(image, 'img');
-
   const handleSubmit = async () => {
     try {
       const data = {
@@ -214,6 +212,7 @@ const Profile = ({navigation}) => {
         catgory: selectedCategory,
         subcategory: selectedSubCategory,
       };
+      console.log('dataaaaa', data);
       dispatch(
         edit_profile(data, user, () => {
           showtoast('success', 'Edit Profile Scuccess');

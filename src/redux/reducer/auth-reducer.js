@@ -2,8 +2,8 @@ const initialState = {
   user: null,
   loading: false,
   user_type: 'client',
-  send_request: [],
-  get_request: [],
+  request: null,
+  chat_list: null,
 };
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -44,17 +44,14 @@ export default (state = initialState, action) => {
     case 'SIGNOUT_PROGRESS':
       return {
         ...state,
-        // loading: true,
       };
     case 'SIGNOUT_SCUCESS':
       return {
         ...state,
-        // loading: true,
       };
     case 'SIGNOUT_ERROR':
       return {
         ...state,
-        // loading: true,
       };
     case 'SET_USER_TYPE':
       return {
@@ -78,21 +75,21 @@ export default (state = initialState, action) => {
         ...state,
         loading: false,
       };
-    case 'RECIEVE_REQUEST_PROCESS':
+    case 'GET_REQUEST_PROCESS':
       return {
         ...state,
         loading: true,
       };
-    case 'RECIEVE_REQUEST_SUCCESS':
+    case 'GET_REQUEST_SUCCESS':
       return {
         ...state,
         loading: false,
-        send_request: action.payload,
+        request: action.payload,
       };
-    case 'RECIEVE_REQUEST_ERROR':
+    case 'GET_REQUEST_ERROR':
       return {
         ...state,
-        loading: true,
+        loading: false,
       };
     case 'SEND_REQUEST_PROCESS':
       return {
@@ -108,7 +105,23 @@ export default (state = initialState, action) => {
     case 'SEND_REQUEST_ERROR':
       return {
         ...state,
+        loading: false,
+      };
+    case 'GET_CHATLIST_PROCESS':
+      return {
+        ...state,
         loading: true,
+      };
+    case 'GET_CHATLIST_SUCCESS':
+      return {
+        ...state,
+        loading: false,
+        chat_list: action.payload,
+      };
+    case 'GET_CHATLIST_ERROR':
+      return {
+        ...state,
+        loading: false,
       };
     default:
       return state;
