@@ -89,16 +89,16 @@ const Lawyer_Profile = ({navigation, route}) => {
   }, []);
 
   const sendrequest = () => {
-    // const apiDate = {
-    //   reciever_id: data?.uid,
-    //   sender_id: user?.uid,
-    //   status: 'pending',
-    // };
-    // dispatch(
-    //   send_request(apiDate, () => {
-    //     showtoast('success', 'request is send');
-    //   }),
-    // );
+    const apiDate = {
+      reciever_id: data?.uid,
+      sender_id: user?.uid,
+      status: 'pending',
+    };
+    dispatch(
+      send_request(apiDate, () => {
+        showtoast('success', 'request is send');
+      }),
+    );
   };
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
@@ -224,38 +224,25 @@ const Lawyer_Profile = ({navigation, route}) => {
               }}
             />
           </View>
-          {loading ? (
-            <ActivityIndicator
-              size={'large'}
-              color={COLORS.primary}
-              style={{marginTop: SIZES.padding * 2}}
-            />
-          ) : (
-            <View
-              style={{
-                paddingHorizontal: SIZES.padding,
-              }}>
-              <TouchableOpacity
-                disabled={true}
-                activeOpacity={1}
-                style={styles.btn3}
-                onPress={() => sendrequest()}>
-                <Text style={styles.btn_text}>
-                  {request?.status == 'pending'
-                    ? 'Pending'
-                    : request?.status == 'Accepted'
-                    ? 'Chat'
-                    : 'Send Request'}
-                </Text>
-              </TouchableOpacity>
-              {/* <TouchableOpacity
-                activeOpacity={1}
-                style={styles.btn3}
-                onPress={() => sendrequest()}>
-                <Text style={styles.btn_text}>{'Send Request'}</Text>
-              </TouchableOpacity> */}
-            </View>
-          )}
+
+          <View
+            style={{
+              paddingHorizontal: SIZES.padding,
+            }}>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={styles.btn3}
+              onPress={() => sendrequest()}>
+              <Text style={styles.btn_text}>
+                {request?.status == 'pending'
+                  ? 'Pending'
+                  : request?.status == 'Accepted'
+                  ? 'Chat'
+                  : 'Send Request'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={{height: SIZES.padding}} />
         </View>
       </ScrollView>

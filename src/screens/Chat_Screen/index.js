@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   SafeAreaView,
@@ -18,74 +19,27 @@ import {openCamera} from 'react-native-image-crop-picker';
 import option_icon from '../../assest/icons/option_icon';
 import clock_icon from '../../assest/icons/clock_icon';
 import {useDispatch, useSelector} from 'react-redux';
-import {getChatlist} from '../../redux/action/auth-action';
-
-const Chatlist = [
-  {
-    id: 1,
-    icon: images.chat1,
-    tittle: 'Chirstina Alonso',
-    text: 'You Hey! Hows it going?',
-    time: '08:01 PM',
-  },
-  {
-    id: 2,
-    icon: images.chat2,
-    tittle: 'Jannies Doe',
-    text: 'You Hey! Hows it going?',
-    time: '08:01 PM',
-  },
-  {
-    id: 3,
-    icon: images.chat1,
-    tittle: 'Chirstina Alonso',
-    text: 'You Hey! Hows it going?',
-    time: '08:01 PM',
-  },
-  {
-    id: 4,
-    icon: images.chat2,
-    tittle: 'Jannies Doe',
-    text: 'You Hey! Hows it going?',
-    time: '08:01 PM',
-  },
-  {
-    id: 6,
-    icon: images.chat1,
-    tittle: 'Chirstina Alonso',
-    text: 'You Hey! Hows it going?',
-    time: '08:01 PM',
-  },
-  {
-    id: 7,
-    icon: images.chat1,
-    tittle: 'Jannies Doe',
-    text: 'You Hey! Hows it going?',
-    time: '08:01 PM',
-  },
-  {
-    id: 8,
-    icon: images.chat1,
-    tittle: 'Chirstina Alonso',
-    text: 'You Hey! Hows it going?',
-    time: '08:01 PM',
-  },
-  {
-    id: 9,
-    icon: images.chat1,
-    tittle: 'Jannies Doe',
-    text: 'You Hey! Hows it going?',
-    time: '08:01 PM',
-  },
-];
+import {acceptRequest, getChatlist} from '../../redux/action/auth-action';
+import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const Chat_Screen = ({navigation}) => {
   const dispatch = useDispatch();
-  const {user, chat_list} = useSelector(state => state.authReducer);
-  console.log(chat_list, 'chat_list');
+  const {user, chat_list, loading, request} = useSelector(
+    state => state.authReducer,
+  );
+  console;
+  // console.log(chat_list, 'list');
   useEffect(() => {
     dispatch(getChatlist(user?.uid));
   }, []);
+
+  const onpressAccept = id => {
+    const data = {
+      status: 'accepted',
+    };
+    dispatch(acceptRequest(id, data, chat_list));
+  };
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <View style={styles.main_view}>
@@ -94,7 +48,7 @@ const Chat_Screen = ({navigation}) => {
             <Icons name={back_arrow_white} />
           </TouchableOpacity>
           <View>
-            <Text style={styles.text}>Metting List</Text>
+            <Text style={styles.text2}>Metting List</Text>
           </View>
           <TouchableOpacity
             // onPress={() => navigation.navigate('Creat_Fourms')}
@@ -108,46 +62,61 @@ const Chat_Screen = ({navigation}) => {
         </View>
       </View>
       <View style={styles.main_views}>
-        <FlatList
-          data={chat_list}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => {
-            console.log(
-              'item?.sender?.profile_image',
-              item?.sender?.profile_image,
-            );
-            return (
-              <TouchableOpacity
-                style={styles.notification_view}
-                onPress={() =>
-                  navigation.navigate('Chat', {username: item.tittle})
-                }>
-                <View style={styles.another_view}>
-                  <View>
-                    <Image
-                      style={{height: 100, width: 100}}
-                      source={
-                        item?.sender?.profile_image
-                          ? {uri: item?.sender?.profile_image}
-                          : images.profile_1
-                      }
-                    />
-                  </View>
-                  <View style={{flex: 1}}>
-                    <Text style={styles.text_card}>
-                      {item?.sender?.full_name}
-                    </Text>
-                    {/* <Text style={{color: 'black'}}>{item.text}</Text> */}
-                  </View>
-                  <View>
-                    <Text style={{textAlign: 'right'}}>{item.time}</Text>
+        {loading ? (
+          <ActivityIndicator
+            size={'large'}
+            color={COLORS.primary}
+            style={{marginTop: SIZES.padding}}
+          />
+        ) : (
+          <FlatList
+            data={chat_list}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => {
+              return (
+                <View style={styles.notification_view}>
+                  <View style={styles.another_view}>
+                    <View>
+                      <Image
+                        style={{
+                          height: 60,
+                          width: 60,
+                          borderRadius: SIZES.padding * 3,
+                        }}
+                        source={
+                          item?.sender?.profile_image
+                            ? {uri: item?.sender?.profile_image}
+                            : images.profile_1
+                        }
+                      />
+                    </View>
+                    <View style={{flex: 1}}>
+                      <Text style={styles.text_card}>
+                        {item?.sender?.full_name}
+                      </Text>
+                      <Text style={styles.text_grid}>request to connect</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => onpressAccept(item.id)}
+                      style={{
+                        backgroundColor: COLORS.primary,
+                        paddingVertical: 7,
+                      }}>
+                      <Text style={styles.text}>
+                        {item?.status == 'pending'
+                          ? 'pending'
+                          : item?.status == 'accepted'
+                          ? 'Chat'
+                          : 'Request'}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
-              </TouchableOpacity>
-            );
-          }}
-        />
+              );
+            }}
+          />
+        )}
         <View style={{height: SIZES.padding}} />
       </View>
     </SafeAreaView>

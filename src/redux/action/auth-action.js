@@ -2,8 +2,6 @@ import auth, {firebase} from '@react-native-firebase/auth';
 import {showtoast} from '../../utils/function';
 import localStoreUtil from '../../utils/loccal_store';
 import database from '@react-native-firebase/database';
-import {async} from '@firebase/util';
-import {orderByChild} from '@firebase/database';
 
 export const userlogin = (data, onDone) => {
   return async dispatch => {
@@ -110,10 +108,9 @@ export const send_request = (data, onDone) => {
     try {
       dispatch({type: 'SEND_REQUEST_PROCESS'});
       const response = await database().ref('databse/chatlist/').push(data);
+      dispatch({type: 'SEND_REQUEST_SUCCESS', payload: response});
       console.log(response, 'responseee');
       onDone();
-
-      dispatch({type: 'SEND_REQUEST_SUCCESS'});
     } catch (err) {
       dispatch({type: 'SEND_REQUEST_ERROR'});
       console.log(err);
@@ -148,15 +145,7 @@ export const getFriendRequest = (reciever_id, sender_id) => {
     }
   };
 };
-
-export const getUser = id => {
-  try {
-  } catch (err) {
-    console.log(err, 'error');
-  }
-};
-
-export const getChatlist = id => {
+export const getChatlist = (id, sender_id, data) => {
   return async dispatch => {
     try {
       dispatch({type: 'GET_CHATLIST_PROCESS'});
@@ -170,10 +159,11 @@ export const getChatlist = id => {
           for (var key in snap?.val()) {
             let obj = {...snap?.val()?.[key]};
             await database()
-              .ref('databse/users/' + id)
+              .ref('databse/users/' + snap?.val()?.[key]?.sender_id)
               .once('value')
               .then(snap => {
                 obj.sender = snap?.val();
+                obj.id = key;
               });
             array?.push(obj);
           }
@@ -182,6 +172,26 @@ export const getChatlist = id => {
     } catch (err) {
       console.log(err, 'error');
       dispatch({type: 'GET_CHATLIST_ERROR'});
+    }
+  };
+};
+
+export const acceptRequest = (id, data, chatlist) => {
+  return async dispatch => {
+    try {
+      dispatch({type: 'ACCEPT_REQUEST_PROCESS'});
+      database()
+        .ref('databse/chatlist/' + id)
+        .update(data)
+        .then(snap => {
+          let array = chatlist;
+          let fillterArray = id;
+          let res = array.filter(({id}) => fillterArray.includes(id));
+          console.log(res, 'obj');
+          dispatch({type: 'ACCEPT_REQUEST_SUCCESS'});
+        });
+    } catch (err) {
+      console.log(err, 'error');
     }
   };
 };

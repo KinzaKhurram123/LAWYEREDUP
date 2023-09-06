@@ -16,15 +16,21 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  text2: {
+    textAlign: 'left',
+    marginHorizontal: SIZES.padding2,
+    ...FONTS.Bold20,
+    color: COLORS.white,
+  },
   text: {
     textAlign: 'left',
     marginHorizontal: SIZES.padding2,
-    ...FONTS.Bold22,
+    ...FONTS.Bold12,
     color: COLORS.white,
   },
   text_grid: {
-    ...FONTS.Light13,
-    color: COLORS.white,
+    ...FONTS.Light11,
+    color: COLORS.primary,
   },
   mail: {
     ...FONTS.Regular11,
@@ -151,13 +157,13 @@ export const styles = StyleSheet.create({
     paddingVertical: SIZES.padding2,
     paddingHorizontal: 10,
     flexDirection: 'row',
-    gap: 10,
+    gap: SIZES.padding,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text_card: {
-    flex: 1,
     textAlign: 'left',
-    marginRight: SIZES.padding * 3.5,
-    ...FONTS.Bold16,
+    ...FONTS.Bold17,
     color: COLORS.secondary,
   },
 });
