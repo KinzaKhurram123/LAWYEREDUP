@@ -4,7 +4,10 @@ const initialState = {
   user_type: 'client',
   request: null,
   chat_list: null,
-  get_request: null
+  get_request: null,
+  chatList_loading: false,
+  chat_loading: true,
+  massage: [],
 };
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -122,23 +125,39 @@ export default (state = initialState, action) => {
     case 'GET_CHATLIST_ERROR':
       return {
         ...state,
-        loading: false,
+        chatList_loading: false,
       };
     case 'ACCEPT_REQUEST_PROCESS':
       return {
         ...state,
-        loading: true,
+        chatList_loading: true,
       };
     case 'ACCEPT_REQUEST_SUCCESS':
       return {
         ...state,
-        loading: false,
-        request: action.payload,
+        chatList_loading: false,
+        chat_list: action.payload,
       };
     case 'ACCEPT_REQUEST_ERROR':
       return {
         ...state,
         loading: false,
+      };
+    case 'CHAT_PROCESS':
+      return {
+        ...state,
+        chat_loading: true,
+      };
+    case 'CHAT_SUCCESS':
+      return {
+        ...state,
+        chat_loading: false,
+        massage: action.payload,
+      };
+    case 'CHAT_ERROR':
+      return {
+        ...state,
+        chat_loading: false,
       };
     default:
       return state;

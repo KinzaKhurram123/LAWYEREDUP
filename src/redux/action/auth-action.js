@@ -184,14 +184,25 @@ export const acceptRequest = (id, data, chatlist) => {
         .ref('databse/chatlist/' + id)
         .update(data)
         .then(snap => {
-          let array = chatlist;
-          let fillterArray = id;
-          let res = array.filter(({id}) => fillterArray.includes(id));
+          let array = [...chatlist];
+          let res = array.indexOf(item => item?.id === id);
           console.log(res, 'obj');
-          dispatch({type: 'ACCEPT_REQUEST_SUCCESS'});
+          array[res].status = 'accepted';
+
+          dispatch({type: 'ACCEPT_REQUEST_SUCCESS', payload: array});
         });
     } catch (err) {
       console.log(err, 'error');
     }
+  };
+};
+
+export const conversations = (id, set_massage) => {
+  return async dispatch => {
+    console.log(id, 'hasskfhjkfg');
+    try {
+      dispatch({type: 'CHAT_PROCESS'});
+      database().ref('databse/chatlist/conversation').push(set_massage);
+    } catch {}
   };
 };

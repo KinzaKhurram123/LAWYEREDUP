@@ -230,9 +230,16 @@ const Lawyer_Profile = ({navigation, route}) => {
               paddingHorizontal: SIZES.padding,
             }}>
             <TouchableOpacity
+              disabled={request?.status == 'pending'}
               activeOpacity={1}
               style={styles.btn3}
-              onPress={() => sendrequest()}>
+              onPress={() => {
+                if (request?.status == 'pending') {
+                  sendrequest();
+                } else {
+                  navigation.navigate('Chat');
+                }
+              }}>
               <Text style={styles.btn_text}>
                 {request?.status == 'pending'
                   ? 'Pending'

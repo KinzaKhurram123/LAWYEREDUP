@@ -1,5 +1,6 @@
 import {async} from '@firebase/util';
 import database from '@react-native-firebase/database';
+import { combineReducers } from 'redux';
 import {showtoast} from '../../utils/function';
 
 export const getCategories = () => {
@@ -26,7 +27,9 @@ export const getsubcategory = category_id => {
         return item?.category_id === category_id;
       });
       dispatch({type: 'SUBCATEGORY_SUCCESS', payload: res});
-    } catch (err) {}
+    } catch (err) {
+      console.log(err, 'err')
+    }
   };
 };
 

@@ -3,32 +3,25 @@ import {
   FlatList,
   Image,
   SafeAreaView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {COLORS, images, SIZES} from '../../constant';
-import Common_Header from '../../Component/CommonHeader';
 import {Icons} from '../../Component';
-import bell_icon from '../../assest/icons/bell_icon';
 import {styles} from './index.style';
 import back_arrow_white from '../../assest/icons/back_arrow_white';
-import {openCamera} from 'react-native-image-crop-picker';
 import option_icon from '../../assest/icons/option_icon';
-import clock_icon from '../../assest/icons/clock_icon';
 import {useDispatch, useSelector} from 'react-redux';
 import {acceptRequest, getChatlist} from '../../redux/action/auth-action';
-import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const Chat_Screen = ({navigation}) => {
   const dispatch = useDispatch();
-  const {user, chat_list, loading, request} = useSelector(
+  const {user, chat_list, loading, request, chatList_loading} = useSelector(
     state => state.authReducer,
   );
   console;
-  // console.log(chat_list, 'list');
   useEffect(() => {
     dispatch(getChatlist(user?.uid));
   }, []);
@@ -38,6 +31,9 @@ const Chat_Screen = ({navigation}) => {
       status: 'accepted',
     };
     dispatch(acceptRequest(id, data, chat_list));
+    navigation.navigate('Chat', {
+      id: id,
+    });
   };
 
   return (
@@ -51,7 +47,6 @@ const Chat_Screen = ({navigation}) => {
             <Text style={styles.text2}>Metting List</Text>
           </View>
           <TouchableOpacity
-            // onPress={() => navigation.navigate('Creat_Fourms')}
             style={{
               alignItems: 'flex-end',
               flex: 1,
@@ -95,22 +90,33 @@ const Chat_Screen = ({navigation}) => {
                       <Text style={styles.text_card}>
                         {item?.sender?.full_name}
                       </Text>
-                      <Text style={styles.text_grid}>request to connect</Text>
                     </View>
-                    <TouchableOpacity
-                      onPress={() => onpressAccept(item.id)}
-                      style={{
-                        backgroundColor: COLORS.primary,
-                        paddingVertical: 7,
-                      }}>
-                      <Text style={styles.text}>
-                        {item?.status == 'pending'
-                          ? 'pending'
-                          : item?.status == 'accepted'
-                          ? 'Chat'
-                          : 'Request'}
-                      </Text>
-                    </TouchableOpacity>
+                    {chatList_loading ? (
+                      <ActivityIndicator
+                        size={'small'}
+                        color={COLORS.secondary}
+                      />
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => onpressAccept(item.id)}
+                        style={{
+                          backgroundColor:
+                            item?.status == 'pending'
+                              ? COLORS.primary
+                              : COLORS.secondary,
+                          paddingVertical: 7,
+                          width: 80,
+                          alignItems: 'center',
+                        }}>
+                        <Text style={styles.text}>
+                          {item?.status == 'pending'
+                            ? 'Accept'
+                            : item?.status == 'accepted'
+                            ? 'Chat'
+                            : 'Request'}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
               );
