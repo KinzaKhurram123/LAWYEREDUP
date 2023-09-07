@@ -17,18 +17,24 @@ import drawer_icon from '../../assest/icons/drawer_icon';
 import camra_icon from '../../assest/icons/camra_icon';
 import video_call_icon from '../../assest/icons/video_call_icon';
 import Bubble from './Component/Bubble';
+import {useDispatch, useSelector} from 'react-redux';
+import {chats, conversations} from '../../redux/action/auth-action';
 
-const Chat = ({navigation}) => {
+const Chat = ({navigation, route}) => {
+  const id = route.params;
+  const dispatch = useDispatch();
+  console.log(id, 'idd');
+
   const [messages, setMessages] = useState([]);
+  useEffect(() => {
+    dispatch(conversations(id, set_massage));
+  }, []);
 
   useEffect(() => {
     setMessages([
       {
         _id: 1,
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        createdAt: new Date(),
-        _id: 2,
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        text: 'Hello developer',
         createdAt: new Date(),
         user: {
           _id: 2,
@@ -39,7 +45,7 @@ const Chat = ({navigation}) => {
     ]);
   }, []);
 
-const onSend = useCallback((messages = []) => {
+  const onSend = useCallback((messages = []) => {
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),
     );
@@ -56,7 +62,7 @@ const onSend = useCallback((messages = []) => {
             style={{flexDirection: 'row', paddingHorizontal: SIZES.padding}}>
             <Image source={images.profile_4} />
             <View>
-              <Text style={styles.text}>Jessica Seth</Text>
+              <Text style={styles.text}>hello</Text>
               <Text style={styles.active}>Active</Text>
             </View>
           </View>
@@ -87,9 +93,7 @@ const onSend = useCallback((messages = []) => {
         // renderBubble={props => {
         //     <Bubble/>
         // }}
-        user={{
-          _id: 1,
-        }}
+        user={{id: 1}}
       />
     </SafeAreaView>
   );
