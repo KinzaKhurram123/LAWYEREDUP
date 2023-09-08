@@ -1,54 +1,59 @@
-import {
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {GiftedChat, Message} from 'react-native-gifted-chat';
 import {COLORS, FONTS, images, SIZES} from '../../constant';
 import {Icons} from '../../Component';
-import back_arrow_white from '../../assest/icons/back_arrow_white';
 import option_icon from '../../assest/icons/option_icon';
 import {styles} from './index.style';
 import drawer_icon from '../../assest/icons/drawer_icon';
-import camra_icon from '../../assest/icons/camra_icon';
 import video_call_icon from '../../assest/icons/video_call_icon';
-import Bubble from './Component/Bubble';
 import {useDispatch, useSelector} from 'react-redux';
-import {chats, conversations} from '../../redux/action/auth-action';
+import {addChat, getChat} from '../../redux/action/auth-action';
+import {ConfirmButton} from 'react-native-modal-datetime-picker';
+import database from '@react-native-firebase/database';
 
 const Chat = ({navigation, route}) => {
-  const id = route.params;
+  const {data} = route.params;
   const dispatch = useDispatch();
-  console.log(id, 'idd');
+  const {user} = useSelector(state => state.authReducer);
+  const {messages, setMessages} = useState([]);
 
-  const [messages, setMessages] = useState([]);
+  const getChatData = () => {
+    try {
+      const id = data?.sender_id + data?.reciever_id;
+      database()
+        .ref('databse/chat')
+        .orderByChild('_id')
+        .equalTo(id)
+        .once('value')
+        .then(async snap => {
+          let array = [];
+          for (var key in snap?.val()) {
+            let obj = {...snap?.val()?.[key]};
+            array?.push(obj);
+          }
+          // setMessages(array);
+        });
+    } catch (err) {}
+  };
+
   useEffect(() => {
-    dispatch(conversations(id, set_massage));
+    getChatData();
   }, []);
 
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ]);
-  }, []);
-
-  const onSend = useCallback((messages = []) => {
+  const onSend = useCallback((message = []) => {
     setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, messages),
+      GiftedChat.append(previousMessages, message),
     );
+    const id = data?.sender_id + data?.reciever_id;
+    let obj = {
+      user: message?.[0]?.user,
+      text: message?.[0]?.text,
+      _id: data?.sender_id + data?.reciever_id,
+      created_at: message?.[0]?.createdAt,
+    };
+
+    dispatch(addChat(obj));
   }, []);
 
   return (
@@ -60,9 +65,15 @@ const Chat = ({navigation, route}) => {
           </TouchableOpacity>
           <View
             style={{flexDirection: 'row', paddingHorizontal: SIZES.padding}}>
-            <Image source={images.profile_4} />
+            <Image
+              source={
+                data?.sender?.profile_image
+                  ? {uri: data?.sender?.profile_image}
+                  : images.profile_4
+              }
+            />
             <View>
-              <Text style={styles.text}>hello</Text>
+              <Text style={styles.text}>{data?.sender?.full_name}</Text>
               <Text style={styles.active}>Active</Text>
             </View>
           </View>
@@ -70,7 +81,7 @@ const Chat = ({navigation, route}) => {
             style={{
               alignItems: 'flex-end',
               flex: 1,
-              paddingLeft: SIZES.padding2,
+              paddingLeft: SIZES.padding * 3,
               flexDirection: 'row',
             }}>
             <Icons
@@ -93,7 +104,7 @@ const Chat = ({navigation, route}) => {
         // renderBubble={props => {
         //     <Bubble/>
         // }}
-        user={{id: 1}}
+        user={{id: user?.uid, avatar: user?.profile_image}}
       />
     </SafeAreaView>
   );

@@ -21,7 +21,7 @@ const SubCategory = ({navigation, route}) => {
   const selectedCategory = route.params;
   const {subcategory_loading} = useSelector(state => state.categoryReducer);
   const [search, setSearch] = useState('');
-
+  console.log(selectedCategory);
   const {subcategory} = useSelector(state => state.categoryReducer);
 
   const [isSelected, setSelection] = useState(false);

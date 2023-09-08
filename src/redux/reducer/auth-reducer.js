@@ -7,7 +7,7 @@ const initialState = {
   get_request: null,
   chatList_loading: false,
   chat_loading: true,
-  massage: [],
+  messages: [],
 };
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -125,7 +125,7 @@ export default (state = initialState, action) => {
     case 'GET_CHATLIST_ERROR':
       return {
         ...state,
-        chatList_loading: false,
+        loading: false,
       };
     case 'ACCEPT_REQUEST_PROCESS':
       return {
@@ -141,7 +141,7 @@ export default (state = initialState, action) => {
     case 'ACCEPT_REQUEST_ERROR':
       return {
         ...state,
-        loading: false,
+        chatList_loading: false,
       };
     case 'CHAT_PROCESS':
       return {
@@ -152,9 +152,24 @@ export default (state = initialState, action) => {
       return {
         ...state,
         chat_loading: false,
-        massage: action.payload,
       };
     case 'CHAT_ERROR':
+      return {
+        ...state,
+        chat_loading: false,
+      };
+    case 'GET_CHAT_PROCESS':
+      return {
+        ...state,
+        chat_loading: true,
+      };
+    case 'GET_CHAT_SUCCESS':
+      return {
+        ...state,
+        chat_loading: false,
+        messages: action.payload,
+      };
+    case 'GET_CHAT_ERROR':
       return {
         ...state,
         chat_loading: false,

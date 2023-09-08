@@ -15,25 +15,34 @@ import back_arrow_white from '../../assest/icons/back_arrow_white';
 import option_icon from '../../assest/icons/option_icon';
 import {useDispatch, useSelector} from 'react-redux';
 import {acceptRequest, getChatlist} from '../../redux/action/auth-action';
+import {userTypes} from '../../config';
 
 const Chat_Screen = ({navigation}) => {
   const dispatch = useDispatch();
-  const {user, chat_list, loading, request, chatList_loading} = useSelector(
+  const {user, chat_list, loading, user_type, chatList_loading} = useSelector(
     state => state.authReducer,
   );
-  console;
   useEffect(() => {
-    dispatch(getChatlist(user?.uid));
+    dispatch(
+      getChatlist(
+        user?.uid,
+        user_type == userTypes.lawyer ? 'reciever_id' : 'sender_id',
+        user_type == userTypes.lawyer ? 'sender_id' : 'reciever_id',
+      ),
+    );
   }, []);
 
-  const onpressAccept = id => {
-    const data = {
-      status: 'accepted',
-    };
-    dispatch(acceptRequest(id, data, chat_list));
-    navigation.navigate('Chat', {
-      id: id,
-    });
+  const onpressAccept = (id, item) => {
+    if (item?.status == 'pending' && user_type == userTypes.lawyer) {
+      const data = {
+        status: 'accepted',
+      };
+      dispatch(acceptRequest(id, data, chat_list));
+    } else {
+      navigation.navigate('Chat', {
+        data: item,
+      });
+    }
   };
 
   return (
@@ -44,7 +53,7 @@ const Chat_Screen = ({navigation}) => {
             <Icons name={back_arrow_white} />
           </TouchableOpacity>
           <View>
-            <Text style={styles.text2}>Metting List</Text>
+            <Text style={styles.text2}>Meeting List</Text>
           </View>
           <TouchableOpacity
             style={{
@@ -98,7 +107,7 @@ const Chat_Screen = ({navigation}) => {
                       />
                     ) : (
                       <TouchableOpacity
-                        onPress={() => onpressAccept(item.id)}
+                        onPress={() => onpressAccept(item.id, item)}
                         style={{
                           backgroundColor:
                             item?.status == 'pending'

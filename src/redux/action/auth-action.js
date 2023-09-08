@@ -26,11 +26,11 @@ export const userlogin = (data, onDone) => {
       }
     } catch (err) {
       showtoast('error', err);
-      console.log(err, 'errr');
       dispatch({type: 'LOGIN_ERROR'});
     }
   };
 };
+
 export const usersignup = (data, onDone) => {
   return async dispatch => {
     try {
@@ -46,17 +46,16 @@ export const usersignup = (data, onDone) => {
           .ref('databse/users/' + obj.uid)
           .set(obj);
         onDone();
-        console.log(databaseResponse, 'databasereponseee');
         dispatch({type: 'SIGNUP_SCUCESS'});
       } else {
         dispatch({type: 'SIGNUP_ERROR'});
       }
     } catch (err) {
-      console.log(err, 'err');
       showtoast('error', err);
     }
   };
 };
+
 export const usersignout = () => {
   return async dispatch => {
     try {
@@ -75,7 +74,6 @@ export const usersignout = () => {
 };
 
 export const edit_profile = (data, user, onDone) => {
-  console.log('UPdated Datat', data);
   return async dispatch => {
     try {
       dispatch({type: 'EDIT_PROFILE_PROCESS'});
@@ -87,7 +85,6 @@ export const edit_profile = (data, user, onDone) => {
             .ref('databse/users/' + user?.uid)
             .once('value')
             .then(async userData => {
-              console.log('userDtaaa', userData?.val());
               await localStoreUtil.store_data('user', userData?.val());
               dispatch({
                 type: 'EDIT_PROFILE_SUCCESS',
@@ -109,11 +106,9 @@ export const send_request = (data, onDone) => {
       dispatch({type: 'SEND_REQUEST_PROCESS'});
       const response = await database().ref('databse/chatlist/').push(data);
       dispatch({type: 'SEND_REQUEST_SUCCESS', payload: response});
-      console.log(response, 'responseee');
       onDone();
     } catch (err) {
       dispatch({type: 'SEND_REQUEST_ERROR'});
-      console.log(err);
     }
   };
 };
@@ -136,22 +131,21 @@ export const getFriendRequest = (reciever_id, sender_id) => {
                 payload: snap?.val()[key],
               });
             }
-            console.log(data, 'data');
           }
         });
     } catch (err) {
-      console.log(err, 'error');
       dispatch({type: 'GET_REQUEST_ERROR'});
     }
   };
 };
-export const getChatlist = (id, sender_id, data) => {
+
+export const getChatlist = (id, condition, userCondition) => {
   return async dispatch => {
     try {
       dispatch({type: 'GET_CHATLIST_PROCESS'});
       database()
         .ref('databse/chatlist/')
-        .orderByChild('reciever_id')
+        .orderByChild(condition)
         .equalTo(id)
         .once('value')
         .then(async snap => {
@@ -159,7 +153,7 @@ export const getChatlist = (id, sender_id, data) => {
           for (var key in snap?.val()) {
             let obj = {...snap?.val()?.[key]};
             await database()
-              .ref('databse/users/' + snap?.val()?.[key]?.sender_id)
+              .ref('databse/users/' + snap?.val()?.[key]?.[userCondition])
               .once('value')
               .then(snap => {
                 obj.sender = snap?.val();
@@ -170,7 +164,6 @@ export const getChatlist = (id, sender_id, data) => {
           dispatch({type: 'GET_CHATLIST_SUCCESS', payload: array});
         });
     } catch (err) {
-      console.log(err, 'error');
       dispatch({type: 'GET_CHATLIST_ERROR'});
     }
   };
@@ -186,23 +179,48 @@ export const acceptRequest = (id, data, chatlist) => {
         .then(snap => {
           let array = [...chatlist];
           let res = array.indexOf(item => item?.id === id);
-          console.log(res, 'obj');
           array[res].status = 'accepted';
-
           dispatch({type: 'ACCEPT_REQUEST_SUCCESS', payload: array});
         });
+    } catch (err) {}
+  };
+};
+
+export const addChat = data => {
+  return async dispatch => {
+    try {
+      dispatch({type: 'CHAT_PROCESS'});
+      database()
+        .ref('databse/chat/')
+        .push(data)
+        .then(snap => {
+          dispatch({type: 'CHAT_SUCCESS'});
+        });
     } catch (err) {
-      console.log(err, 'error');
+      dispatch({type: 'CHAT_ERROR'});
     }
   };
 };
 
-export const conversations = (id, set_massage) => {
+export const getChat = id => {
   return async dispatch => {
-    console.log(id, 'hasskfhjkfg');
     try {
-      dispatch({type: 'CHAT_PROCESS'});
-      database().ref('databse/chatlist/conversation').push(set_massage);
-    } catch {}
+      dispatch({type: 'GET_CHAT_PROCESS'});
+      database()
+        .ref('databse/chat')
+        .orderByChild('_id')
+        .equalTo(id)
+        .once('value')
+        .then(async snap => {
+          let array = [];
+          for (var key in snap?.val()) {
+            let obj = {...snap?.val()?.[key]};
+            array?.push(obj);
+            dispatch({type: 'GET_CHAT_SUCCESS', payload: array});
+          }
+        });
+    } catch (err) {
+      dispatch({type: 'GET_CHAT_ERROR'});
+    }
   };
 };
