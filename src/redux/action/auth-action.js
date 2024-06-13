@@ -25,7 +25,6 @@ export const userlogin = (data, onDone) => {
         dispatch({type: 'LOGIN_ERROR'});
       }
     } catch (err) {
-      showtoast('error', err);
       dispatch({type: 'LOGIN_ERROR'});
     }
   };
@@ -224,3 +223,22 @@ export const getChat = id => {
     }
   };
 };
+
+
+// const getChatData = () => {
+//   return async =>{
+//   database()
+//     .ref('databse/chat')
+//     .orderByChild('_id')
+//     .equalTo(id)
+//     .once('value')
+//     .then(async snap => {
+//       let array = [];
+//       for (var key in snap?.val()) {
+//         let obj = {...snap?.val()?.[key]};
+//         array?.push(obj);
+//       }
+//       setMessages(array);
+//     });
+//   }
+// };

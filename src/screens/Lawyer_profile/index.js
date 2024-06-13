@@ -89,6 +89,7 @@ const Lawyer_Profile = ({navigation, route}) => {
   }, []);
 
   const sendrequest = () => {
+    console.log('pressed')
     const apiDate = {
       reciever_id: data?.uid,
       sender_id: user?.uid,
@@ -100,6 +101,9 @@ const Lawyer_Profile = ({navigation, route}) => {
       }),
     );
   };
+
+
+  console.log(request, 'reqiesttttt')
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <ImageBackground
@@ -230,14 +234,14 @@ const Lawyer_Profile = ({navigation, route}) => {
               paddingHorizontal: SIZES.padding,
             }}>
             <TouchableOpacity
-              disabled={request?.status == 'pending'}
-              activeOpacity={1}
+              // disabled={request?.status == 'pending'}
+              activeOpacity={0.5}
               style={styles.btn3}
               onPress={() => {
-                if (request?.status == 'pending') {
+                if (request?.status == null) {
                   sendrequest();
                 } else {
-                  navigation.navigate('Chat');
+                  navigation.navigate('Chat', {data: null});
                 }
               }}>
               <Text style={styles.btn_text}>

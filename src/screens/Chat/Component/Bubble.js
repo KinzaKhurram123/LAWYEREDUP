@@ -1,25 +1,32 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { COLORS } from '../../../constant'
+import {Bubble} from 'react-native-gifted-chat';
 
-const Bubble = ({props}) => {
+const CustomBubble = ({props}) => {
   return (
     <Bubble
     {...props}
     textStyle={{
       right: {
-        color: 'yellow',
+        color: 'red',
       },
+      left :{
+         color: "red"
+      }
     }}
     wrapperStyle={{
       left: {
         backgroundColor: COLORS.pending,
       },
+      right: {
+        backgroundColor: "red"
+      }
     }}
   />
   )
 }
 
-export default Bubble
+export default CustomBubble
 
 const styles = StyleSheet.create({})

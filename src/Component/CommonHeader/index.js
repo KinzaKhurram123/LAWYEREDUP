@@ -22,7 +22,6 @@ const Common_Header = ({
           </TouchableOpacity>
         )}
         <Text style={[styles.title, tittlestyle]}>{tittle}</Text>
-
         {isdrawer && (
           <TouchableOpacity onpress={onpressdrawer}>
             <Icons name={drawer_icon} />

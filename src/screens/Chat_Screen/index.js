@@ -45,6 +45,7 @@ const Chat_Screen = ({navigation}) => {
     }
   };
 
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <View style={styles.main_view}>
@@ -77,6 +78,7 @@ const Chat_Screen = ({navigation}) => {
             data={chat_list}
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item.id}
+            ListEmptyComponent={<Text style={{textAlign: "center", marginTop: SIZES.padding, color: 'red'}}>Not Found</Text>}
             renderItem={({item}) => {
               return (
                 <View style={styles.notification_view}>

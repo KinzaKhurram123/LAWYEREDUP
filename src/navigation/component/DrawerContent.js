@@ -101,7 +101,6 @@ const DrawerContent = ({navigation}) => {
                 height: 60,
                 width: 60,
                 borderRadius: SIZES.padding * 2,
-                marginLeft: SIZES.padding2,
               }}
             />
           </TouchableOpacity>
@@ -115,7 +114,7 @@ const DrawerContent = ({navigation}) => {
             <Text style={styles.text2}>{user?.email}</Text>
           </View>
           <TouchableOpacity
-            style={{padding: SIZES.padding}}
+          style={{height:SIZES.padding, width: SIZES.padding, alignItems: 'center'}}
             onPress={() => navigation.navigate('Profile')}>
             <Icons name={edit_icon} style={styles.icon} />
           </TouchableOpacity>
